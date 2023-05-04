@@ -1,0 +1,11 @@
+job:
+  api_url: https://disaportaldata.gsi.go.jp
+  metadata_file: ./metadata.xml
+  tile:
+    zoom_level: 17
+    max_x: 121601
+    min_x: 110294
+    max_y: 57937
+    min_y: 46861
+output:
+  dir: /opt/repo/dev/hazard_map_in_python/data
