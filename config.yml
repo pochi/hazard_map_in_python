@@ -4,8 +4,11 @@ job:
   tile:
     zoom_level: 17
     max_x: 121601
-    min_x: 110294
+    min_x: 120000
+    #min_x: 110294
     max_y: 57937
     min_y: 46861
+  # cache: 0の時はcacheする、1の時はそうしない
+  cache: 0
 output:
-  dir: /opt/repo/dev/hazard_map_in_python/data
+  dir: /opt/repo/dev/hazard_map_in_python/data/
