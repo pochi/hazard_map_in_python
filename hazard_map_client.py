@@ -59,7 +59,12 @@ def download_image(prefix, output_base_dir, cache):
     if os.path.exists(output_file) and cache == 0:
         return True
 
-    response = requests.get(url)
+    try:
+        response = requests.get(url)
+    except requests.exceptions.SSLError:
+        print(f'[Failed] "{url}" can not reach because of requests.exceptions.SSLError')
+        return False
+
     if response.status_code == 404:
         os.makedirs(output_dir)
         pathlib.Path(output_not_found_file).touch()
@@ -114,7 +119,7 @@ def download_image(prefix, output_base_dir, cache):
 
 def download_images(process_num, urls, output_base_dir, cache):
     partial_download_image = partial(download_image, output_base_dir=output_base_dir, cache=cache)
-    with ThreadPoolExecutor(max_workers=2) as e:
+    with ThreadPoolExecutor(max_workers=6) as e:
         results = list(tqdm(
             # e.starmap(download_image, [(prefix, output_base_dir, cache) for prefix in urls]), 
             e.map(partial_download_image, urls), 
@@ -129,7 +134,7 @@ def fetch_hazard_map_images(config):
     # INFO: ここからAPIの定義がとれるが今回は一つしか使わないのでxmlは利用しない
 
     urls = _make_urls(config["job"]["tile"])
-    process_num = os.cpu_count() - 1
+    process_num = os.cpu_count() - 2
     divide_urls = np.array_split(urls, process_num)
     divide_urls_with_process_nums = [(n, divide_urls[n], config["output"]["dir"], config["job"]["cache"]) for n in range(process_num)]
     with Pool(
